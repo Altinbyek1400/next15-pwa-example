@@ -20,7 +20,7 @@ const InstallButton = () => {
   }, []);
 
   const handleInstallClick = () => {
-    if (!deferredPrompt) return;
+    // if (!deferredPrompt) return;
     deferredPrompt.prompt();
     deferredPrompt.userChoice.then((choiceResult: any) => {
       if (choiceResult.outcome === "accepted") {
@@ -31,14 +31,12 @@ const InstallButton = () => {
   };
 
   return (
-    deferredPrompt && (
-      <button
-        onClick={handleInstallClick}
-        className="p-2 bg-blue-600 text-white rounded-md"
-      >
-        Install App
-      </button>
-    )
+    <button
+      onClick={handleInstallClick}
+      className="p-2 bg-blue-600 text-white rounded-md"
+    >
+      Install App
+    </button>
   );
 };
 
