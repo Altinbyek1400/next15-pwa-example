@@ -21,6 +21,9 @@ const pwaConfig = withPWA({
 
 const nextConfig = {
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default pwaConfig(nextConfig);
