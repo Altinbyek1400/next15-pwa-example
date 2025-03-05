@@ -31,12 +31,14 @@ const InstallButton = () => {
   };
 
   return (
-    <button
-      onClick={handleInstallClick}
-      className="p-2 bg-blue-600 text-white rounded-md"
-    >
-      Install App
-    </button>
+    deferredPrompt && (
+      <button
+        onClick={handleInstallClick}
+        className="p-2 bg-blue-600 text-white rounded-md"
+      >
+        Install App
+      </button>
+    )
   );
 };
 
