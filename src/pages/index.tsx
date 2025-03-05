@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
+import { useEffect, useState } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,6 +13,39 @@ const geistMono = Geist_Mono({
 });
 
 export default function Home() {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  useEffect(() => {
+    // Браузер A2HS-г санал болгох боломжтой эсэхийг шалгана
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault(); // Браузерын автоматаар гардаг саналыг зогсооно
+      setDeferredPrompt(e); // Саналыг хадгална
+      setIsInstallable(true); // Товчлуурыг харуулахыг идэвхжүүлнэ
+    });
+
+    // Хэрэглэгч суулгасны дараа төлөвийг шинэчилнэ (заавал биш)
+    window.addEventListener("appinstalled", () => {
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+      console.log("Апп амжилттай суулгагдлаа");
+    });
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt(); // Суулгах саналыг гаргана
+      const { outcome } = await deferredPrompt.userChoice; // Хэрэглэгчийн сонголтыг хүлээнэ
+      if (outcome === "accepted") {
+        console.log("Хэрэглэгч аппыг суулгалаа");
+      } else {
+        console.log("Хэрэглэгч суулгахаас татгалзлаа");
+      }
+      setDeferredPrompt(null); // Саналыг цэвэрлэнэ
+      setIsInstallable(false); // Товчлуурыг нууна
+    }
+  };
+
   return (
     <div
       className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
@@ -60,6 +94,19 @@ export default function Home() {
           >
             Read our docs
           </a>
+        </div>
+
+        <div style={{ padding: "20px" }}>
+          <h1>Тавтай морилно уу!</h1>
+          <p>Энд таны PWA-ийн үндсэн хуудас байна.</p>
+          {isInstallable && (
+            <button
+              onClick={handleInstallClick}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Апп суулгах
+            </button>
+          )}
         </div>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
